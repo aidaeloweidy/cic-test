@@ -63,7 +63,7 @@ function sendText() {
   previewBox.html(""); // empty prevview
 }
 
-
+// adding a tester thing here 
 function updateMainText(data) {
   let newText = createDiv(data.text);
   newText.class("submitted-text"); 
