@@ -11,7 +11,7 @@ app.use(express.static("public"));
 
 io.on("connection", (socket) => {
   console.log("User connected");
-  
+
   socket.on("previewChange", (data) => {
     if (!data.stealth) {
       socket.broadcast.emit("updatePreview", { text: data.text });
@@ -20,9 +20,8 @@ io.on("connection", (socket) => {
 
   socket.on("textSubmit", (data) => {
     io.emit("updateMainText", data);
-    socket.broadcast.emit("updatePreview", { text: "" }); 
+    socket.broadcast.emit("updatePreview", { text: "" });
   });
-  
 
   socket.on("disconnect", () => {
     console.log("User disconnected");
