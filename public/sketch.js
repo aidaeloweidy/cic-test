@@ -5,6 +5,7 @@ let inactivityTimer;
 
 let stealthMode = false;
 let stealthButton;
+let newText = ['somestuff', 'كنت مذهولا لا أصدق ما يحدث لي، لكن الله منحني فرصة جديدة، عفو رئاسي مكنني من العودة لأعمالي والمشاركة في اعمار مصر في "مدينتي" والعاصمة الجديدة والساحل الشمالي، أراد الله أن تستفيد مصر من خبراتي وأعمالي لبناء مجتمعاتب', 'another long piece of text that says whatever in it', '░░░░░░░░░░░░░']
 
 function setup() {
   noCanvas();
@@ -19,6 +20,7 @@ function setup() {
   });
 
   select("#send-button").mousePressed(sendText);
+  select('#generate-button').mousePressed(generateText)
 
   startInactivityTimer();
 
@@ -77,6 +79,11 @@ function sendText() {
   previewBox.html(""); // empty prevview
 }
 
+function generateText(){
+  let randomIndex = Math.floor(Math.random()*newText.length)
+  let randomString = newText[randomIndex];
+inputBox.value(inputBox.value()+randomString)
+}
 // add autoscroll, and enter to send
 function updateMainText(data) {
   let newText = createDiv(data.text);
@@ -103,9 +110,9 @@ function startInactivityTimer() {
 
   inactivityTimer = setTimeout(() => {
     //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
-    let space = "____________";
+    let space = "░░░░░░░░░░░░░░░░░░░░";
     inputBox.value(inputBox.value() + space);
-  }, 20000); // 20 seconds
+  }, 40000); // 40 seconds
   //  if (!stealthMode) {
   //    sendPreview();
   //  }
