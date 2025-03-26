@@ -47,8 +47,8 @@ body {
 
 .preview-box {
   margin: 5% 5% 5% 0%;
-  width: 180px;
-  height: 80px;
+  width: 250px;
+  height: 15px;
   font-family: "Courier New", monospace;
   background: white;
   color: black;
@@ -76,10 +76,12 @@ textarea {
   padding: 5px;
 }
 
-.button-container {
+.button-container{
+  display: -webkit-flex;
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin-top: 5px;
 }
 
 button {
@@ -89,6 +91,7 @@ button {
   color: black;
   border: 1px dashed black;
   cursor: pointer;
+  margin: 10px;
 }
 
 button#stealth-button {
