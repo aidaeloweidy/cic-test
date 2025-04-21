@@ -5,7 +5,7 @@ let inactivityTimer;
 
 let stealthMode = false;
 let stealthButton;
-let newText = ['somestuff', 'كنت مذهولا لا أصدق ما يحدث لي، لكن الله منحني فرصة جديدة، عفو رئاسي مكنني من العودة لأعمالي والمشاركة في اعمار مصر في "مدينتي" والعاصمة الجديدة والساحل الشمالي، أراد الله أن تستفيد مصر من خبراتي وأعمالي لبناء مجتمعاتب', 'another long piece of text that says whatever in it', '░░░░░░░░░░░░░']
+let newText = ['somestuff', 'كنت مذهولا لا أصدق ما يحدث لي، لكن الله منحني فرصة جديدة، عفو رئاسي مكنني من العودة لأعمالي والمشاركة في اعمار مصر في "مدينتي" والعاصمة الجديدة والساحل الشمالي، أراد الله أن تستفيد مصر من خبراتي وأعمالي لبناء مجتمعاتب', 'another long piece of text that says whatever in it']
 
 function setup() {
   noCanvas();
@@ -103,7 +103,7 @@ function keyPressed() {
   }
 }
 
-// adding timer function
+// added auto send 
 
 function startInactivityTimer() {
   clearTimeout(inactivityTimer); // Reset timer if it was running
@@ -112,12 +112,11 @@ function startInactivityTimer() {
     //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
     let space = "░░░░░░░░░░░░░░░░░░░░";
     inputBox.value(inputBox.value() + space);
-  }, 40000); // 40 seconds
-  //  if (!stealthMode) {
-  //    sendPreview();
-  //  }
+    sendText();
+  }, 10000); // 40 seconds
+ 
 }
 
 function resetInactivityTimer() {
-  startInactivityTimer(); // Restart the timer when user types
+  startInactivityTimer(); 
 }
