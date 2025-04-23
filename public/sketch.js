@@ -51,10 +51,13 @@ function sendPreview() {
   let data = { text: inputBox.value(), stealth: stealthMode };
   socket.emit("previewChange", data);
 }
-// neeed to add here autoscroll preview
+
+
+
 // function updatePreview(data) {
 //   previewBox.html(data.text);
 // }
+
 function updatePreview(data) {
   previewBox.html(data.text);
 //autoscroll
@@ -103,16 +106,16 @@ function keyPressed() {
   }
 }
 
-// added auto send 
+// auto send / space silence function 
 
 function startInactivityTimer() {
-  clearTimeout(inactivityTimer); // Reset timer if it was running
+  clearTimeout(inactivityTimer); // Reset timer 
 
   // inactivityTimer = setTimeout(() => {
   //   //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
   //   let space = "░░░░░░░░░░░░░░░░░░░░";
   //   inputBox.value(inputBox.value() + space);
-  //   sendText();
+  //   sendText(); 
   // }, 10000); // 40 seconds
  
 }

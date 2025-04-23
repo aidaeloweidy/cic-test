@@ -28,7 +28,7 @@ async function connectToMongo() {
           .toArray();
         res.json(allMessages);
       } catch (err) {
-        console.error("❌ Failed to fetch messages:", err);
+        console.error("＞﹏＜ Failed to fetch messages:", err);
         res.status(500).json({ error: "Internal server error" });
       }
     });
@@ -56,7 +56,8 @@ async function connectToMongo() {
 
         try {
           await messages.insertOne(entry); 
-          io.emit("updateMainText", entry); 
+          io.emit("updateMainText", entry);
+          io.emit("updateArchive", entry);
           socket.broadcast.emit("updatePreview", { text: "" });
         } catch (e) {
           console.error(" Error saving to MongoDB:", e);
