@@ -21,6 +21,19 @@ async function connectToMongo() {
     const db = client.db("cic-database"); 
     const messages = db.collection("messages");
 
+    app.get("/messages", async (req, res) => {
+      try {
+        const allMessages = await messages
+          .find({}, { projection: { text: 1, _id: 0 } }) // only return text
+          .toArray();
+        res.json(allMessages);
+      } catch (err) {
+        console.error("❌ Failed to fetch messages:", err);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+    
+
     console.log("(❁´◡`❁) Connected to MongoDB");
 
     io.on("connection", (socket) => {

@@ -84,6 +84,13 @@ textarea {
   margin-top: 5px;
 }
 
+/* submitted page */
+.message {
+  margin-bottom: 0.2rem;
+  /* border-bottom: 1px solid #c9c3c3; */
+  padding-bottom: 0.2rem;
+}
+
 button {
   padding: 10px;
   font-family: "Courier New", monospace;

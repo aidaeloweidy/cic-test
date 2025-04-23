@@ -108,12 +108,12 @@ function keyPressed() {
 function startInactivityTimer() {
   clearTimeout(inactivityTimer); // Reset timer if it was running
 
-  inactivityTimer = setTimeout(() => {
-    //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
-    let space = "░░░░░░░░░░░░░░░░░░░░";
-    inputBox.value(inputBox.value() + space);
-    sendText();
-  }, 10000); // 40 seconds
+  // inactivityTimer = setTimeout(() => {
+  //   //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
+  //   let space = "░░░░░░░░░░░░░░░░░░░░";
+  //   inputBox.value(inputBox.value() + space);
+  //   sendText();
+  // }, 10000); // 40 seconds
  
 }
 
