@@ -5,7 +5,7 @@ let inactivityTimer;
 
 let stealthMode = false;
 let stealthButton;
-let newText = ['somestuff', 'كنت مذهولا لا أصدق ما يحدث لي، لكن الله منحني فرصة جديدة، عفو رئاسي مكنني من العودة لأعمالي والمشاركة في اعمار مصر في "مدينتي" والعاصمة الجديدة والساحل الشمالي، أراد الله أن تستفيد مصر من خبراتي وأعمالي لبناء مجتمعاتب', 'another long piece of text that says whatever in it']
+// let newText = ['somestuff', 'كنت مذهولا لا أصدق ما يحدث لي، لكن الله منحني فرصة جديدة، عفو رئاسي مكنني من العودة لأعمالي والمشاركة في اعمار مصر في "مدينتي" والعاصمة الجديدة والساحل الشمالي، أراد الله أن تستفيد مصر من خبراتي وأعمالي لبناء مجتمعاتب', 'another long piece of text that says whatever in it']
 
 function setup() {
   noCanvas();
@@ -20,16 +20,25 @@ function setup() {
   });
 
   select("#send-button").mousePressed(sendText);
-  select('#generate-button').mousePressed(generateText)
+  // select('#generate-button').mousePressed(generateText)
 
   startInactivityTimer();
 
-  stealthButton = select("#stealth-button");
-  stealthButton.mousePressed(toggleStealth);
+  // stealthButton = select("#stealth-button");
+  // stealthButton.mousePressed(toggleStealth);
 
   socket = io.connect(window.location.origin);
+  console.log("Client connected to server")
+
+  generateText();
+  // socket.emit('requestRandomWorkshopMessage');
+  // console.log("message rq sent")
   socket.on("updatePreview", updatePreview);
   socket.on("updateMainText", updateMainText);
+  
+  
+
+ 
 }
 
 function toggleStealth() {
@@ -70,9 +79,11 @@ function updatePreview(data) {
 }
 
 document.querySelector("#preview-box").addEventListener("wheel", (event) => {
-  event.preventDefault(); // Disable mouse scroll
-  event.target.scrollTop = event.target.scrollHeight; // Keep view the bottom
+  event.preventDefault(); 
+  event.target.scrollTop = event.target.scrollHeight; 
 });
+
+
 
 
 function sendText() {
@@ -82,22 +93,64 @@ function sendText() {
   previewBox.html(""); // empty prevview
 }
 
-function generateText(){
-  let randomIndex = Math.floor(Math.random()*newText.length)
-  let randomString = newText[randomIndex];
-inputBox.value(inputBox.value()+randomString)
-}
-// add autoscroll, and enter to send
-function updateMainText(data) {
-  let newText = createDiv(data.text);
-  newText.class("submitted-text");
-  mainText.child(newText);
+// function generateText(){
+//   let randomIndex = Math.floor(Math.random()*newText.length)
+//   let randomString = newText[randomIndex];
+// inputBox.value(inputBox.value()+randomString)
+// }
 
-  setTimeout(() => {
-    let submittedTextBox = document.querySelector("#main-text");
-    submittedTextBox.scrollTop = submittedTextBox.scrollHeight;
-  }, 10);
+function generateText() {
+
+  fetch('/random-workshop-message')
+    .then((response) => response.json())
+    .then((data) => {
+      if (data && data.text) {
+        // display fetched message
+        updateMainText({ text: data.text });
+      } else {
+        console.error("No text found in the response");
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching random message:', error);
+    });
 }
+
+// // add autoscroll, and enter to send
+// function updateMainText(data) {
+//   let newText = createDiv(data.text);
+//   newText.class("submitted-text");
+//   mainText.child(newText);
+
+//   setTimeout(() => {
+//     let submittedTextBox = document.querySelector("#main-text");
+//     submittedTextBox.scrollTop = submittedTextBox.scrollHeight;
+//   }, 10);
+// }
+
+function updateMainText(data) {
+  if (data && data.text) {
+  
+    let newText = createDiv(data.text);
+    newText.class("submitted-text");
+    
+
+    let mainTextDiv = select("#main-text");
+    if (mainTextDiv) {
+      mainTextDiv.child(newText);
+    }
+
+    // Autoscroll 
+    setTimeout(() => {
+      let submittedTextBox = select("#main-text");
+      if (submittedTextBox.elt) {
+        submittedTextBox.elt.scrollTop = submittedTextBox.elt.scrollHeight;
+      }
+    }, 10);
+  } 
+}
+
+
 
 function keyPressed() {
   if (keyCode === ENTER) {

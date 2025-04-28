@@ -30,13 +30,16 @@ socket.on("updateArchive", (entry) => {
   container.appendChild(newMessageDiv);
 });
 
-// // Optional: Refresh every 30 seconds (to fetch any updates missed)
+
+
 // function fetchData() {
-//   fetch('/messages')
+//   console.log("Fetching data..."); // Debug log to check if polling happens
+//   fetch('http://localhost:8080/messages') // Make sure the URL matches your server's URL
 //     .then(response => response.json())
 //     .then(data => {
+//       console.log("Received data:", data); // Debug log to check the received data
 //       const archiveContainer = document.getElementById('archive-container');
-//       archiveContainer.innerHTML = ''; // Clear current messages
+//       archiveContainer.innerHTML = ''; // Clear the container before adding new data
 
 //       data.forEach(item => {
 //         const messageElement = document.createElement('div');
@@ -47,26 +50,8 @@ socket.on("updateArchive", (entry) => {
 //     .catch(err => console.error('Error fetching data:', err));
 // }
 
-function fetchData() {
-  console.log("Fetching data..."); // Debug log to check if polling happens
-  fetch('http://localhost:8080/messages') // Make sure the URL matches your server's URL
-    .then(response => response.json())
-    .then(data => {
-      console.log("Received data:", data); // Debug log to check the received data
-      const archiveContainer = document.getElementById('archive-container');
-      archiveContainer.innerHTML = ''; // Clear the container before adding new data
+// // Refresh every 30 seconds
+// setInterval(fetchData, 5000);
 
-      data.forEach(item => {
-        const messageElement = document.createElement('div');
-        messageElement.textContent = item.text;
-        archiveContainer.appendChild(messageElement);
-      });
-    })
-    .catch(err => console.error('Error fetching data:', err));
-}
-
-// Refresh every 30 seconds
-setInterval(fetchData, 5000);
-
-// Initial fetch to load data immediately on page load
-fetchData();
+// // Initial fetch to load data immediately on page load
+// fetchData();

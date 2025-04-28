@@ -15,12 +15,17 @@ app.use(express.static("public"));
 const mongoUri =  process.env.MONGO_URI;
 const client = new MongoClient(mongoUri);
 
+//let workshopMessages;
+
 async function connectToMongo() {
   try {
     await client.connect();
     const db = client.db("cic-database"); 
     const messages = db.collection("messages");
+    const workshopMessages = db.collection("workshop")
 
+
+    // fetch for submitted archive
     app.get("/messages", async (req, res) => {
       try {
         const allMessages = await messages
@@ -32,6 +37,23 @@ async function connectToMongo() {
         res.status(500).json({ error: "Internal server error" });
       }
     });
+
+    // fetch for starter prompt sentence
+    app.get("/random-workshop-message", async (req, res) => {
+      try {
+        const messages = await workshopMessages.find({}).toArray();
+        if (messages.length > 0) {
+          const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+          res.json({ text: randomMessage.text });
+        } else {
+          res.status(404).json({ error: "No messages found" });
+        }
+      } catch (err) {
+        console.error("Error fetching workshop messages:", err);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+    
     
 
     console.log("(❁´◡`❁) Connected to MongoDB");
