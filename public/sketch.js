@@ -35,10 +35,7 @@ function setup() {
   // console.log("message rq sent")
   socket.on("updatePreview", updatePreview);
   socket.on("updateMainText", updateMainText);
-  
-  
-
- 
+   
 }
 
 function toggleStealth() {

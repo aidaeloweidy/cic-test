@@ -10,6 +10,7 @@ window.addEventListener("load", () => {
         div.textContent = msg.text;
         container.appendChild(div);
       });
+      container.scrollTop = container.scrollHeight;
     })
     .catch((err) => {
       console.error("Error loading archive:", err);
@@ -28,30 +29,13 @@ socket.on("updateArchive", (entry) => {
   newMessageDiv.textContent = entry.text;
 
   container.appendChild(newMessageDiv);
+  container.scrollTop = container.scrollHeight;
 });
 
 
-
-// function fetchData() {
-//   console.log("Fetching data..."); // Debug log to check if polling happens
-//   fetch('http://localhost:8080/messages') // Make sure the URL matches your server's URL
-//     .then(response => response.json())
-//     .then(data => {
-//       console.log("Received data:", data); // Debug log to check the received data
-//       const archiveContainer = document.getElementById('archive-container');
-//       archiveContainer.innerHTML = ''; // Clear the container before adding new data
-
-//       data.forEach(item => {
-//         const messageElement = document.createElement('div');
-//         messageElement.textContent = item.text;
-//         archiveContainer.appendChild(messageElement);
-//       });
-//     })
-//     .catch(err => console.error('Error fetching data:', err));
+// function scrollToBottom() {
+//   const container = document.getElementById('archive-container');
+//   container.scrollTop = container.scrollHeight;
 // }
 
-// // Refresh every 30 seconds
-// setInterval(fetchData, 5000);
-
-// // Initial fetch to load data immediately on page load
-// fetchData();
+//scrollToBottom();

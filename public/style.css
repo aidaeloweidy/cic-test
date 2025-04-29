@@ -98,8 +98,9 @@ textarea {
 #archive-container {
   margin: 10px;
   text-align: center;
-  overflow-x:auto;
+  overflow-x: auto;
   max-height: 100vh; 
+  height: auto;
   overflow-y: auto;  /* enable vertical scroll when needed */
 /*   padding: 20px;   */
 }
