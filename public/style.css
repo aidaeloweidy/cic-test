@@ -6,7 +6,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
+  margin: 0.5rem;
 }
 
 .container {
@@ -22,7 +22,7 @@ body {
   /* gap: 15px; */
 }
 
-/* added this id */
+
 #main-text {
     max-height: 400px;
     padding: 2%;
@@ -86,10 +86,24 @@ textarea {
 
 /* submitted page */
 .message {
-  margin-bottom: 0.2rem;
-  /* border-bottom: 1px solid #c9c3c3; */
-  padding-bottom: 0.2rem;
+  /*   display: inline-block;  */
+  margin-right: 10px; 
+  font-size: 22px;
+/*   word-wrap: break-word;  */
+/*   margin-bottom: 0.3rem; */
+
+  padding-bottom: 0.32rem;
 }
+
+#archive-container {
+  margin: 10px;
+  text-align: center;
+  overflow-x:auto;
+  max-height: 100vh; 
+  overflow-y: auto;  /* enable vertical scroll when needed */
+/*   padding: 20px;   */
+}
+
 
 button {
   padding: 10px;
