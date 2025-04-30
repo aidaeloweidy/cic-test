@@ -3,6 +3,13 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const { MongoClient } = require("mongodb");
+const imageCollection = [
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skelly_jirvnq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/shadows_fi3210.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/signs_dgzdkg.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skies_axv8qj.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033377/samples/breakfast.jpg",
+];
 
 const app = express();
 const server = http.createServer(app);
@@ -17,6 +24,7 @@ const connectedUsers = new Set();
 const readyPlayers = new Set();
 
 let startTime = Date.now();
+let timerStarted = false;
 let timerInterval;
 let gameStarted = false;
 let gameOver = false;
@@ -39,7 +47,7 @@ function startTimer() {
 }
 
 function timerAlert() {
-  io.emit('timerAlert');
+  io.emit("timerAlert");
 }
 
 function endGame() {
@@ -142,27 +150,32 @@ async function connectToMongo() {
           socket.emit("notEnoughPlayers");
           return;
         }
-    
+
         if (gameStarted) {
           socket.emit("gameAlreadyStarted");
           return;
         }
-    
+
         readyPlayers.add(socket.id);
         console.log("Ready players:", readyPlayers.size);
-    
+
         if (readyPlayers.size === 2) {
           gameStarted = true;
           gameOver = false;
-    
+
           try {
             const messages = await workshopMessages.find({}).toArray();
             const randomMessage = messages.length
               ? messages[Math.floor(Math.random() * messages.length)]
               : { text: "No messages found." };
-    
-            io.emit("gameStart", randomMessage.text);
-            startTimer();
+
+              const selectedImages = getRandomImages(imageCollection, 4)
+
+            io.emit("gameStart", {
+              message: randomMessage.text,
+              images: selectedImages,
+            });
+           
           } catch (err) {
             console.error("Error fetching message:", err);
             io.emit("gameStart", "Error loading message.");
@@ -178,8 +191,15 @@ async function connectToMongo() {
         //playerReadyCount = 0;
         gameStarted = false;
         gameOver = false;
-
+        timerStarted = false;
         io.emit("gameReset");
+      });
+
+      socket.on("startTimer", () => {
+        if (!timerStarted) {
+          timerStarted = true;
+          startTimer();
+        }
       });
 
       // preview not saved
@@ -217,6 +237,11 @@ async function connectToMongo() {
 }
 
 connectToMongo();
+
+function getRandomImages(arr, count) {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
 
 server.listen(8080, "0.0.0.0", () => {
   console.log("Server running on http://localhost:8080");

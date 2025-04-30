@@ -47,10 +47,16 @@ function setup() {
   //   //document.getElementById("player-count").textContent = `Players online: ${count}`;
   // });
 
-  socket.on("gameStart", (message) => {
+  socket.on("gameStart", ({ message, images }) => {
     document.getElementById("start-modal").classList.add("hide");
     updateMainText({text: message})
-    // startGame(); // your game logic
+    showImagePrompt(images);
+
+
+    setTimeout(() => {
+      hideImagePrompt();
+      socket.emit("startTimer"); 
+    }, 30000);
     console.log("started");
   });
 
@@ -88,6 +94,26 @@ function setup() {
     timeAlert.textContent = 'متبقي من الوقت 3 دقائق';
   })
   
+}
+
+function showImagePrompt(images) {
+ const overlay = document.createElement('div');
+ overlay.id = 'image-prompt';
+
+ images.forEach((src)=> {
+  const img = document.createElement("img");
+  img.src = src;
+  overlay.appendChild(img);
+ });
+ 
+ document.body.appendChild(overlay);
+}
+
+function hideImagePrompt() {
+  const overlay = document.getElementById("image-prompt");
+  if (overlay) {
+    overlay.remove();
+  }
 }
 
 function showGameOverScreen() {

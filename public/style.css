@@ -155,6 +155,31 @@ h1 {
   display:none; 
 }
 
+#image-prompt {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#image-prompt.hide {
+  display: none;
+}
+
+#image-prompt img {
+  max-width: 200px;
+  /* width: 45%; */
+  margin: 1%;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
 #archive-container {
   margin: 10px;
   text-align: center;
