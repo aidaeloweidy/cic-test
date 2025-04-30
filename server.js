@@ -14,12 +14,12 @@ const mongoUri = process.env.MONGO_URI;
 const client = new MongoClient(mongoUri);
 
 const connectedUsers = new Set();
+const readyPlayers = new Set();
 
 let startTime = Date.now();
 let timerInterval;
 let gameStarted = false;
 let gameOver = false;
-let playerReadyCount = 0;
 
 function startTimer() {
   startTime = Date.now();
@@ -32,8 +32,14 @@ function startTimer() {
     if (elapsedSeconds >= 900) {
       clearInterval(timerInterval);
       endGame();
+    } else if (elapsedSeconds >= 720) {
+      timerAlert();
     }
   }, 1000);
+}
+
+function timerAlert() {
+  io.emit('timerAlert');
 }
 
 function endGame() {
@@ -94,46 +100,82 @@ async function connectToMongo() {
 
       socket.on("disconnect", () => {
         connectedUsers.delete(socket.id);
-        playerReadyCount = 0;
+        readyPlayers.delete(socket.id);
+        //playerReadyCount = 0;
         console.log(
           `User disconnected: ${socket.id} | Total: ${connectedUsers.size}`
         );
       });
 
+      // socket.on("tryStart", async () => {
+      //   if (connectedUsers.size === 2 && !gameStarted) {
+      //     playerReadyCount += 1;
+
+      //     if (playerReadyCount === 2) {
+      //       gameStarted = true;
+      //       gameOver = false;
+
+      //       try {
+      //         const messages = await workshopMessages.find({}).toArray();
+      //         if (messages.length > 0) {
+      //           const randomMessage =
+      //             messages[Math.floor(Math.random() * messages.length)];
+      //           io.emit("gameStart", randomMessage.text); // Send message to both
+      //         } else {
+      //           io.emit("gameStart", "No messages found.");
+      //         }
+      //       } catch (err) {
+      //         console.error("Error fetching message:", err);
+      //         io.emit("gameStart", "Error loading message.");
+      //       }
+
+      //       startTimer();
+      //       console.log("started");
+      //     }
+      //   } else {
+      //     socket.emit("notEnoughPlayers");
+      //   }
+      // });
+
       socket.on("tryStart", async () => {
-        if (connectedUsers.size === 2 && !gameStarted) {
-          playerReadyCount += 1;
-
-          if (playerReadyCount === 2) {
-            gameStarted = true;
-            gameOver = false;
-
-            try {
-              const messages = await workshopMessages.find({}).toArray();
-              if (messages.length > 0) {
-                const randomMessage =
-                  messages[Math.floor(Math.random() * messages.length)];
-                io.emit("gameStart", randomMessage.text); // Send message to both
-              } else {
-                io.emit("gameStart", "No messages found.");
-              }
-            } catch (err) {
-              console.error("Error fetching message:", err);
-              io.emit("gameStart", "Error loading message.");
-            }
-
+        if (connectedUsers.size < 2) {
+          socket.emit("notEnoughPlayers");
+          return;
+        }
+    
+        if (gameStarted) {
+          socket.emit("gameAlreadyStarted");
+          return;
+        }
+    
+        readyPlayers.add(socket.id);
+        console.log("Ready players:", readyPlayers.size);
+    
+        if (readyPlayers.size === 2) {
+          gameStarted = true;
+          gameOver = false;
+    
+          try {
+            const messages = await workshopMessages.find({}).toArray();
+            const randomMessage = messages.length
+              ? messages[Math.floor(Math.random() * messages.length)]
+              : { text: "No messages found." };
+    
+            io.emit("gameStart", randomMessage.text);
             startTimer();
-            console.log("started");
+          } catch (err) {
+            console.error("Error fetching message:", err);
+            io.emit("gameStart", "Error loading message.");
           }
         } else {
-          socket.emit("notEnoughPlayers");
+          socket.emit("waitingForOtherPlayer");
         }
       });
 
       socket.on("restartGame", () => {
         console.log(" restarting...");
-
-        playerReadyCount = 0;
+        readyPlayers.clear();
+        //playerReadyCount = 0;
         gameStarted = false;
         gameOver = false;
 

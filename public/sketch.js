@@ -81,6 +81,12 @@ function setup() {
     console.log("Game was reset. Refreshing...");
     window.location.reload(); 
   });
+
+  socket.on('timerAlert', () => {
+    let timeAlert = document.getElementById("timer-alert-display")
+    timeAlert.classList.remove("hide");
+    timeAlert.textContent = 'متبقي من الوقت 3 دقائق';
+  })
   
 }
 
