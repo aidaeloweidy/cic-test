@@ -42,20 +42,14 @@ function setup() {
     console.log("attempted to start");
   });
 
-  // socket.on("playerCount", (count) => {
-  //   playerCOunt = count;
-  //   //document.getElementById("player-count").textContent = `Players online: ${count}`;
-  // });
-
   socket.on("gameStart", ({ message, images }) => {
     document.getElementById("start-modal").classList.add("hide");
-    updateMainText({text: message})
+    updateMainText({ text: message });
     showImagePrompt(images);
-
 
     setTimeout(() => {
       hideImagePrompt();
-      socket.emit("startTimer"); 
+      socket.emit("startTimer");
     }, 30000);
     console.log("started");
   });
@@ -65,48 +59,43 @@ function setup() {
   });
 
   socket.on("timerUpdate", (elapsedSeconds) => {
-    // sharedTimer = seconds;
+    //this isnt working actually?
     if (timerDisplay) {
       timerDisplay.textContent = elapsedSeconds;
-      // console.log(seconds)
     }
   });
 
   socket.on("gameEnd", () => {
     console.log("end");
     sendText();
-    //document.getElementById("start-modal").classList.remove("hide");
     inputBox.attribute("disabled", true);
     select("#send-button").attribute("disabled", true);
-
-    //mainText.child(createDiv("<h1> ฅ^•ﻌ•^ฅ it over ฅ^•ﻌ•^ฅ</h1>"));
     showGameOverScreen();
   });
 
   socket.on("gameReset", () => {
     console.log("Game was reset. Refreshing...");
-    window.location.reload(); 
+    window.location.reload();
   });
 
-  socket.on('timerAlert', () => {
-    let timeAlert = document.getElementById("timer-alert-display")
+  socket.on("timerAlert", () => {
+    let timeAlert = document.getElementById("timer-alert-display");
     timeAlert.classList.remove("hide");
-    timeAlert.textContent = 'متبقي من الوقت 3 دقائق';
-  })
-  
+    timeAlert.textContent = "متبقي من الوقت 3 دقائق";
+  });
 }
 
 function showImagePrompt(images) {
- const overlay = document.createElement('div');
- overlay.id = 'image-prompt';
+  const overlay = document.createElement("div");
+  overlay.id = "image-prompt";
 
- images.forEach((src)=> {
-  const img = document.createElement("img");
-  img.src = src;
-  overlay.appendChild(img);
- });
- 
- document.body.appendChild(overlay);
+  images.forEach((src) => {
+    const img = document.createElement("img");
+    img.src = src;
+    overlay.appendChild(img);
+  });
+
+  document.body.appendChild(overlay);
 }
 
 function hideImagePrompt() {
@@ -180,23 +169,6 @@ function sendText() {
 // inputBox.value(inputBox.value()+randomString)
 // }
 
-//change for simplicity later + syncing
-
-// function generateText() {
-//   fetch("/random-workshop-message")
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data && data.text) {
-//         // display fetched message
-//         updateMainText({ text: data.text });
-//       } else {
-//         console.error("No text found in the response");
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching random message:", error);
-//     });
-// }
 
 function updateMainText(data) {
   if (data && data.text) {
@@ -225,7 +197,7 @@ function keyPressed() {
   }
 }
 
-// auto send inactivity ~ tracking silence 
+// auto send inactivity ~ tracking silence
 
 // function startInactivityTimer() {
 //   clearTimeout(inactivityTimer); // Reset timer

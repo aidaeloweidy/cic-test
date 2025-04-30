@@ -8,7 +8,11 @@ const imageCollection = [
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/shadows_fi3210.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/signs_dgzdkg.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skies_axv8qj.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033377/samples/breakfast.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/watches_wxfxba.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036090/DSC_5112_ptisgj.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/dolls_vibg8o.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/flowercar_hhgjgq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/catsmassoud_fouixk.jpg",
 ];
 
 const app = express();
@@ -115,36 +119,6 @@ async function connectToMongo() {
         );
       });
 
-      // socket.on("tryStart", async () => {
-      //   if (connectedUsers.size === 2 && !gameStarted) {
-      //     playerReadyCount += 1;
-
-      //     if (playerReadyCount === 2) {
-      //       gameStarted = true;
-      //       gameOver = false;
-
-      //       try {
-      //         const messages = await workshopMessages.find({}).toArray();
-      //         if (messages.length > 0) {
-      //           const randomMessage =
-      //             messages[Math.floor(Math.random() * messages.length)];
-      //           io.emit("gameStart", randomMessage.text); // Send message to both
-      //         } else {
-      //           io.emit("gameStart", "No messages found.");
-      //         }
-      //       } catch (err) {
-      //         console.error("Error fetching message:", err);
-      //         io.emit("gameStart", "Error loading message.");
-      //       }
-
-      //       startTimer();
-      //       console.log("started");
-      //     }
-      //   } else {
-      //     socket.emit("notEnoughPlayers");
-      //   }
-      // });
-
       socket.on("tryStart", async () => {
         if (connectedUsers.size < 2) {
           socket.emit("notEnoughPlayers");
@@ -169,13 +143,12 @@ async function connectToMongo() {
               ? messages[Math.floor(Math.random() * messages.length)]
               : { text: "No messages found." };
 
-              const selectedImages = getRandomImages(imageCollection, 4)
+            const selectedImages = getRandomImages(imageCollection, 4);
 
             io.emit("gameStart", {
               message: randomMessage.text,
               images: selectedImages,
             });
-           
           } catch (err) {
             console.error("Error fetching message:", err);
             io.emit("gameStart", "Error loading message.");
@@ -188,7 +161,6 @@ async function connectToMongo() {
       socket.on("restartGame", () => {
         console.log(" restarting...");
         readyPlayers.clear();
-        //playerReadyCount = 0;
         gameStarted = false;
         gameOver = false;
         timerStarted = false;
@@ -226,10 +198,6 @@ async function connectToMongo() {
           console.error(" Error saving to MongoDB:", e);
         }
       });
-
-      // socket.on("disconnect", () => {
-      //   console.log("User disconnected");
-      // });
     });
   } catch (err) {
     console.error("MongoDB connection error:", err);

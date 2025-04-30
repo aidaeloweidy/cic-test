@@ -176,8 +176,8 @@ h1 {
   max-width: 200px;
   /* width: 45%; */
   margin: 1%;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  /* box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); */
 }
 
 #archive-container {
