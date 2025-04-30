@@ -5,10 +5,8 @@ let inactivityTimer;
 
 let stealthMode = false;
 let stealthButton;
-//let playerCount = 0;
 let sharedTimer = 0;
 let gameOver = false;
-// let newText = ['somestuff', 'كنت مذهولا لا أصدق ما يحدث لي، لكن الله منحني فرصة جديدة، عفو رئاسي مكنني من العودة لأعمالي والمشاركة في اعمار مصر في "مدينتي" والعاصمة الجديدة والساحل الشمالي، أراد الله أن تستفيد مصر من خبراتي وأعمالي لبناء مجتمعاتب', 'another long piece of text that says whatever in it']
 
 function setup() {
   noCanvas();
@@ -26,7 +24,7 @@ function setup() {
   select("#send-button").mousePressed(sendText);
   // select('#generate-button').mousePressed(generateText)
 
-  startInactivityTimer();
+  //startInactivityTimer();
 
   // stealthButton = select("#stealth-button");
   // stealthButton.mousePressed(toggleStealth);
@@ -34,7 +32,7 @@ function setup() {
   socket = io.connect(window.location.origin);
   console.log("Client connected to server");
 
-  generateText();
+  //generateText();
 
   socket.on("updatePreview", updatePreview);
   socket.on("updateMainText", updateMainText);
@@ -49,8 +47,9 @@ function setup() {
   //   //document.getElementById("player-count").textContent = `Players online: ${count}`;
   // });
 
-  socket.on("gameStart", () => {
+  socket.on("gameStart", (message) => {
     document.getElementById("start-modal").classList.add("hide");
+    updateMainText({text: message})
     // startGame(); // your game logic
     console.log("started");
   });
@@ -150,21 +149,22 @@ function sendText() {
 // }
 
 //change for simplicity later + syncing
-function generateText() {
-  fetch("/random-workshop-message")
-    .then((response) => response.json())
-    .then((data) => {
-      if (data && data.text) {
-        // display fetched message
-        updateMainText({ text: data.text });
-      } else {
-        console.error("No text found in the response");
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching random message:", error);
-    });
-}
+
+// function generateText() {
+//   fetch("/random-workshop-message")
+//     .then((response) => response.json())
+//     .then((data) => {
+//       if (data && data.text) {
+//         // display fetched message
+//         updateMainText({ text: data.text });
+//       } else {
+//         console.error("No text found in the response");
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Error fetching random message:", error);
+//     });
+// }
 
 function updateMainText(data) {
   if (data && data.text) {
@@ -193,19 +193,19 @@ function keyPressed() {
   }
 }
 
-// auto send / space silence function
+// auto send inactivity ~ tracking silence 
 
-function startInactivityTimer() {
-  clearTimeout(inactivityTimer); // Reset timer
+// function startInactivityTimer() {
+//   clearTimeout(inactivityTimer); // Reset timer
 
-  // inactivityTimer = setTimeout(() => {
-  //   //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
-  //   let space = "░░░░░░░░░░░░░░░░░░░░";
-  //   inputBox.value(inputBox.value() + space);
-  //   sendText();
-  // }, 10000); // 40 seconds
-}
+//   // inactivityTimer = setTimeout(() => {
+//   //   //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
+//   //   let space = "_____________";
+//   //   inputBox.value(inputBox.value() + space);
+//   //   sendText();
+//   // }, 40000); // 40 seconds
+// }
 
-function resetInactivityTimer() {
-  startInactivityTimer();
-}
+// function resetInactivityTimer() {
+//   startInactivityTimer();
+// }

@@ -100,21 +100,31 @@ async function connectToMongo() {
         );
       });
 
-      socket.on("tryStart", () => {
+      socket.on("tryStart", async () => {
         if (connectedUsers.size === 2 && !gameStarted) {
           playerReadyCount += 1;
 
           if (playerReadyCount === 2) {
             gameStarted = true;
             gameOver = false;
-            //send message here instead
-            io.emit("gameStart");
+
+            try {
+              const messages = await workshopMessages.find({}).toArray();
+              if (messages.length > 0) {
+                const randomMessage =
+                  messages[Math.floor(Math.random() * messages.length)];
+                io.emit("gameStart", randomMessage.text); // Send message to both
+              } else {
+                io.emit("gameStart", "No messages found.");
+              }
+            } catch (err) {
+              console.error("Error fetching message:", err);
+              io.emit("gameStart", "Error loading message.");
+            }
+
             startTimer();
             console.log("started");
           }
-          // } else if (gameOver) {
-          //   socket.emit("gameAlreadyOver"); // client can show message
-          // }
         } else {
           socket.emit("notEnoughPlayers");
         }
@@ -127,7 +137,7 @@ async function connectToMongo() {
         gameStarted = false;
         gameOver = false;
 
-        io.emit("gameReset"); // need to show "start" button again
+        io.emit("gameReset");
       });
 
       // preview not saved
@@ -155,9 +165,9 @@ async function connectToMongo() {
         }
       });
 
-      socket.on("disconnect", () => {
-        console.log("User disconnected");
-      });
+      // socket.on("disconnect", () => {
+      //   console.log("User disconnected");
+      // });
     });
   } catch (err) {
     console.error("MongoDB connection error:", err);
