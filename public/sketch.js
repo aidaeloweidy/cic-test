@@ -1,15 +1,19 @@
 let socket;
-let inputBox, previewBox, mainText;
+let inputBox, previewBox, mainText, timerDisplay;
 let previewVisible = true;
 let inactivityTimer;
 
 let stealthMode = false;
 let stealthButton;
+//let playerCount = 0;
+let sharedTimer = 0;
+let gameOver = false;
 // let newText = ['somestuff', 'كنت مذهولا لا أصدق ما يحدث لي، لكن الله منحني فرصة جديدة، عفو رئاسي مكنني من العودة لأعمالي والمشاركة في اعمار مصر في "مدينتي" والعاصمة الجديدة والساحل الشمالي، أراد الله أن تستفيد مصر من خبراتي وأعمالي لبناء مجتمعاتب', 'another long piece of text that says whatever in it']
 
 function setup() {
   noCanvas();
 
+  timerDisplay = select("#timer-display");
   inputBox = select("#input-box");
   previewBox = select("#preview-box");
   mainText = select("#main-text");
@@ -28,14 +32,68 @@ function setup() {
   // stealthButton.mousePressed(toggleStealth);
 
   socket = io.connect(window.location.origin);
-  console.log("Client connected to server")
+  console.log("Client connected to server");
 
   generateText();
-  // socket.emit('requestRandomWorkshopMessage');
-  // console.log("message rq sent")
+
   socket.on("updatePreview", updatePreview);
   socket.on("updateMainText", updateMainText);
-   
+
+  document.getElementById("start-button").addEventListener("click", () => {
+    socket.emit("tryStart");
+    console.log("attempted to start");
+  });
+
+  // socket.on("playerCount", (count) => {
+  //   playerCOunt = count;
+  //   //document.getElementById("player-count").textContent = `Players online: ${count}`;
+  // });
+
+  socket.on("gameStart", () => {
+    document.getElementById("start-modal").classList.add("hide");
+    // startGame(); // your game logic
+    console.log("started");
+  });
+
+  socket.on("notEnoughPlayers", () => {
+    alert("Waiting for another player to join...");
+  });
+
+  socket.on("timerUpdate", (elapsedSeconds) => {
+    // sharedTimer = seconds;
+    if (timerDisplay) {
+      timerDisplay.textContent = elapsedSeconds;
+      // console.log(seconds)
+    }
+  });
+
+  socket.on("gameEnd", () => {
+    console.log("end");
+    sendText();
+    //document.getElementById("start-modal").classList.remove("hide");
+    inputBox.attribute("disabled", true);
+    select("#send-button").attribute("disabled", true);
+
+    //mainText.child(createDiv("<h1> ฅ^•ﻌ•^ฅ it over ฅ^•ﻌ•^ฅ</h1>"));
+    showGameOverScreen();
+  });
+
+  socket.on("gameReset", () => {
+    console.log("Game was reset. Refreshing...");
+    window.location.reload(); 
+  });
+  
+}
+
+function showGameOverScreen() {
+  let overlay = document.getElementById("game-end-overlay");
+  if (overlay) {
+    overlay.classList.remove("hide");
+  }
+
+  document.getElementById("refresh").addEventListener("click", () => {
+    socket.emit("restartGame");
+  });
 }
 
 function toggleStealth() {
@@ -48,9 +106,9 @@ function sendPreview() {
   if (!stealthMode) {
     let data = { text: inputBox.value() };
     socket.emit("previewChange", data);
-    console.log('preview sent')
+    console.log("preview sent");
   }
-  console.log('stealth')
+  console.log("stealth");
 }
 
 function sendPreview() {
@@ -58,15 +116,13 @@ function sendPreview() {
   socket.emit("previewChange", data);
 }
 
-
-
 // function updatePreview(data) {
 //   previewBox.html(data.text);
 // }
 
 function updatePreview(data) {
   previewBox.html(data.text);
-//autoscroll
+  //autoscroll
   let previewTextBox = document.querySelector("#preview-box");
   if (previewTextBox) {
     setTimeout(() => {
@@ -76,12 +132,9 @@ function updatePreview(data) {
 }
 
 document.querySelector("#preview-box").addEventListener("wheel", (event) => {
-  event.preventDefault(); 
-  event.target.scrollTop = event.target.scrollHeight; 
+  event.preventDefault();
+  event.target.scrollTop = event.target.scrollHeight;
 });
-
-
-
 
 function sendText() {
   let data = { text: inputBox.value() };
@@ -96,9 +149,9 @@ function sendText() {
 // inputBox.value(inputBox.value()+randomString)
 // }
 
+//change for simplicity later + syncing
 function generateText() {
-
-  fetch('/random-workshop-message')
+  fetch("/random-workshop-message")
     .then((response) => response.json())
     .then((data) => {
       if (data && data.text) {
@@ -109,45 +162,29 @@ function generateText() {
       }
     })
     .catch((error) => {
-      console.error('Error fetching random message:', error);
+      console.error("Error fetching random message:", error);
     });
 }
 
-// // add autoscroll, and enter to send
-// function updateMainText(data) {
-//   let newText = createDiv(data.text);
-//   newText.class("submitted-text");
-//   mainText.child(newText);
-
-//   setTimeout(() => {
-//     let submittedTextBox = document.querySelector("#main-text");
-//     submittedTextBox.scrollTop = submittedTextBox.scrollHeight;
-//   }, 10);
-// }
-
 function updateMainText(data) {
   if (data && data.text) {
-  
     let newText = createDiv(data.text);
     newText.class("submitted-text");
-    
 
     let mainTextDiv = select("#main-text");
     if (mainTextDiv) {
       mainTextDiv.child(newText);
     }
 
-    // Autoscroll 
+    // Autoscroll
     setTimeout(() => {
       let submittedTextBox = select("#main-text");
       if (submittedTextBox.elt) {
         submittedTextBox.elt.scrollTop = submittedTextBox.elt.scrollHeight;
       }
     }, 10);
-  } 
+  }
 }
-
-
 
 function keyPressed() {
   if (keyCode === ENTER) {
@@ -156,20 +193,19 @@ function keyPressed() {
   }
 }
 
-// auto send / space silence function 
+// auto send / space silence function
 
 function startInactivityTimer() {
-  clearTimeout(inactivityTimer); // Reset timer 
+  clearTimeout(inactivityTimer); // Reset timer
 
   // inactivityTimer = setTimeout(() => {
   //   //let randomLetter = String.fromCharCode(97 + floor(random(26))); // a-z
   //   let space = "░░░░░░░░░░░░░░░░░░░░";
   //   inputBox.value(inputBox.value() + space);
-  //   sendText(); 
+  //   sendText();
   // }, 10000); // 40 seconds
- 
 }
 
 function resetInactivityTimer() {
-  startInactivityTimer(); 
+  startInactivityTimer();
 }
