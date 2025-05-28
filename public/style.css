@@ -6,7 +6,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0.5rem;
+  /* margin: 0.5rem; */
 }
 
 .container {
@@ -100,21 +100,57 @@ h1 {
 }
 
 .modal {
-  position: fixed;
-  top: 0;
+  position: relative;
+  /* top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.98);
+  height: 100%; */
+  background: rgba(0, 0, 0, 0.78);
   display: flex;
+  width: 100vw;
+  height: 100vh;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  margin: 0%;
 }
 .modal.show {
   display: flex;
 }
 .modal.hide {
   display: none;
+}
+
+#start-modal {
+  position: fixed;       
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.9); 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;    
+  z-index: 9999;           
+  overflow: hidden;
+}
+
+.overlay-svg {
+  position: fixed;     
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; 
+  z-index: 1;
+}
+
+.overlay-svg img {
+   width: 105%;
+  height: 105%;
+  object-fit: contain;  
+  display: block;
 }
 
 #game-end-overlay {
@@ -186,8 +222,7 @@ h1 {
   overflow-x: auto;
   max-height: 100vh;
   height: auto;
-  overflow-y: auto; /* enable vertical scroll when needed */
-  /*   padding: 20px;   */
+  overflow-y: auto; 
 }
 
 button {
@@ -200,10 +235,39 @@ button {
   margin: 10px;
 }
 
+#start-button {
+    position: relative; 
+  z-index: 10;
+  /* padding: 1em 2em; */
+  /* font-size: 1.5rem; */
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px dashed black;
+}
+
 button#stealth-button {
   background: pink;
   color: black;
 }
+
+#viewer-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.player-box {
+  flex: 1;
+  border: 1px dashed black;
+  padding: 10px;
+  min-width: 500px;
+  min-height: 100px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: #fefefe;
+}
+
 
 /* to scroll text up
 .submitted-text {

@@ -8,6 +8,8 @@ let stealthButton;
 let sharedTimer = 0;
 let gameOver = false;
 
+let playerNumber;
+
 function setup() {
   noCanvas();
 
@@ -21,6 +23,8 @@ function setup() {
     resetInactivityTimer();
   });
 
+  
+
   select("#send-button").mousePressed(sendText);
   // select('#generate-button').mousePressed(generateText)
 
@@ -31,6 +35,14 @@ function setup() {
 
   socket = io.connect(window.location.origin);
   console.log("Client connected to server");
+
+  socket.emit('registerPlayer');
+
+  socket.on('playerNumber', (num) => {
+    playerNumber = num;
+
+  })
+
 
   //generateText();
 
@@ -122,18 +134,23 @@ function toggleStealth() {
   stealthButton.style("background", stealthMode ? "grey" : "pink");
 }
 
-function sendPreview() {
-  if (!stealthMode) {
-    let data = { text: inputBox.value() };
-    socket.emit("previewChange", data);
-    console.log("preview sent");
-  }
-  console.log("stealth");
-}
+// function sendPreview() {
+//   if (!stealthMode) {
+//     let data = { text: inputBox.value() };
+//     socket.emit("previewChange", data);
+//     console.log("preview sent");
+
+//     socket.emit('playerTyping', { text: data})
+//   }
+//   console.log("stealth");
+// }
 
 function sendPreview() {
-  let data = { text: inputBox.value(), stealth: stealthMode };
+  let currentTypedText = inputBox.value();
+  let data = { text: currentTypedText, stealth: stealthMode };
   socket.emit("previewChange", data);
+
+  socket.emit('playerTyping', {text: currentTypedText})
 }
 
 // function updatePreview(data) {

@@ -4,7 +4,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const { MongoClient } = require("mongodb");
 const imageCollection = [
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skelly_jirvnq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skelly_jirvnq.jpg", 
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/shadows_fi3210.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/signs_dgzdkg.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skies_axv8qj.jpg",
@@ -26,6 +26,7 @@ const client = new MongoClient(mongoUri);
 
 const connectedUsers = new Set();
 const readyPlayers = new Set();
+const players = { player1: null, player2: null };
 
 let startTime = Date.now();
 let timerStarted = false;
@@ -110,13 +111,45 @@ async function connectToMongo() {
         `User connected: ${socket.id} | Total: ${connectedUsers.size}`
       );
 
+      socket.on('registerPlayer', ()=> {
+        if (!players.player1) {
+          players.player1 = socket.id;
+          socket.emit('playerNumber', 1)
+        } else if (!players.player2) {
+          players.player2 = socket.id;
+          socket.emit('playerNumber', 2) 
+        } else {
+          socket.emit('playerNumber', 0) 
+        }
+        }
+      )
+
+      socket.on('playerTyping', (data) => {
+        let playerNum = null;
+        if (socket.id === players.player1) playerNum = 1; 
+        else if (socket.id === players.player2) playerNum = 2;
+
+        if (playerNum) {
+          io.emit('updatePlayerTyping', {player : playerNum, text:data.text})
+          console.log(data.text)
+        }
+      })
+    
       socket.on("disconnect", () => {
         connectedUsers.delete(socket.id);
         readyPlayers.delete(socket.id);
-        //playerReadyCount = 0;
+        if (players.player1 === socket.id) players.player1 = null;
+        if (players.player2 === socket.id) players.player2 = null;      
+        
+        if (connectedUsers.size < 2) {
+          gameStarted = false;
+          playerReadyCount = 0;
+          readyPlayers.clear()
+        }
         console.log(
           `User disconnected: ${socket.id} | Total: ${connectedUsers.size}`
         );
+        console.log('Players:', players)
       });
 
       socket.on("tryStart", async () => {
