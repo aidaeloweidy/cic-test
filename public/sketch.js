@@ -20,7 +20,7 @@ function setup() {
 
   inputBox.input(() => {
     sendPreview();
-    resetInactivityTimer();
+    //resetInactivityTimer();
   });
 
   
@@ -56,13 +56,14 @@ function setup() {
 
   socket.on("gameStart", ({ message, images }) => {
     document.getElementById("start-modal").classList.add("hide");
+    document.querySelector(".overlay-svg").classList.add("hide");
     updateMainText({ text: message });
     showImagePrompt(images);
 
     setTimeout(() => {
       hideImagePrompt();
       socket.emit("startTimer");
-    }, 30000);
+    }, 30000); //30000 30 seconds
     console.log("started");
   });
 

@@ -9,9 +9,10 @@ const imageCollection = [
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/signs_dgzdkg.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skies_axv8qj.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/watches_wxfxba.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036090/DSC_5112_ptisgj.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-20_at_10.46.14_fdecccc6_e09edq.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/dolls_vibg8o.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/flowercar_hhgjgq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-15_at_09.39.17_7dd9bbba_dg0rl7.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/catsmassoud_fouixk.jpg",
 ];
 
@@ -42,9 +43,10 @@ function startTimer() {
     const elapsedSeconds = Math.floor((now - startTime) / 1000);
     io.emit("timerUpdate", elapsedSeconds);
 
-    if (elapsedSeconds >= 900) {
+    if (elapsedSeconds >= 10) {
       clearInterval(timerInterval);
       endGame();
+      console.log('timer done')
     } else if (elapsedSeconds >= 720) {
       timerAlert();
     }
@@ -131,7 +133,7 @@ async function connectToMongo() {
 
         if (playerNum) {
           io.emit('updatePlayerTyping', {player : playerNum, text:data.text})
-          console.log(data.text)
+          //console.log(data.text)
         }
       })
     

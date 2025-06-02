@@ -1,7 +1,59 @@
-const socket = io();
+const socket = io("http://localhost:8080");
+
+const queues = {
+  box1: [], box2: [],
+};
+
+const isProcessing = {
+  box1:false,
+  box2: false
+}
+
+const lastText = {
+  box1: "",
+  box2: ""
+};
+
+//queue & delay
+function processQueue(boxId) {
+   const box = document.getElementById(boxId);
+  if (queues[boxId].length > 0) {
+    const char = queues[boxId].shift();
+    box.textContent += char;
+    lastText[boxId] += char;
+
+    setTimeout(() => processQueue(boxId), 1000); //1 sec
+  } else {
+    isProcessing[boxId] = false;
+  }
+}
 
 socket.on("updatePlayerTyping", ({ player, text }) => {
-  const box = document.getElementById(player === 1 ? "box1" : "box2");
-  const lastChar = text?.slice(-1) || "";
-  box.textContent += lastChar;
+  const boxId = player === 1 ? "box1" : "box2";
+  //const box =  document.getElementById(boxId)
+
+    const prev = lastText[boxId];
+  const diff = text.slice(prev.length);
+
+  if (diff.length > 0) {
+    queues[boxId].push(...diff.split(""));
+    //lastText[boxId] = text;
+
+    if (!isProcessing[boxId]) {
+      isProcessing[boxId] = true;
+      processQueue(boxId);
+    }
+  }
+});
+
+//needs separate function for this script for timing differences, different socket trigger
+socket.on("updateArchive", (entry) => {
+  const container = document.getElementById("big-text");
+
+  const newMessageDiv = document.createElement("div");
+  newMessageDiv.className = "message";
+  newMessageDiv.textContent = entry.text;
+
+  container.appendChild(newMessageDiv);
+  container.scrollTop = container.scrollHeight;
 });
