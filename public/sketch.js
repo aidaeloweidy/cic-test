@@ -10,6 +10,20 @@ let gameOver = false;
 
 let playerNumber;
 
+const imageCollection = [
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skelly_jirvnq.jpg", 
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/shadows_fi3210.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/signs_dgzdkg.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skies_axv8qj.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/watches_wxfxba.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-20_at_10.46.14_fdecccc6_e09edq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/dolls_vibg8o.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/flowercar_hhgjgq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-15_at_09.39.17_7dd9bbba_dg0rl7.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/catsmassoud_fouixk.jpg",
+];
+
+
 function setup() {
   noCanvas();
 
@@ -57,13 +71,15 @@ function setup() {
   socket.on("gameStart", ({ message, images }) => {
     document.getElementById("start-modal").classList.add("hide");
     document.querySelector(".overlay-svg").classList.add("hide");
+
+    const selectedImages = getRandomImages(imageCollection, 4);
     updateMainText({ text: message });
-    showImagePrompt(images);
+    showImagePrompt(selectedImages);
 
     setTimeout(() => {
       hideImagePrompt();
       socket.emit("startTimer");
-    }, 30000); //30000 30 seconds
+    }, 20000); //30000 30 seconds
     console.log("started");
   });
 
@@ -213,6 +229,11 @@ function keyPressed() {
     sendText();
     return false;
   }
+}
+
+function getRandomImages(arr, count) {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 }
 
 // auto send inactivity ~ tracking silence

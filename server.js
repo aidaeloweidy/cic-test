@@ -43,7 +43,7 @@ function startTimer() {
     const elapsedSeconds = Math.floor((now - startTime) / 1000);
     io.emit("timerUpdate", elapsedSeconds);
 
-    if (elapsedSeconds >= 10) {
+    if (elapsedSeconds >= 900) {
       clearInterval(timerInterval);
       endGame();
       console.log('timer done')
@@ -178,11 +178,11 @@ async function connectToMongo() {
               ? messages[Math.floor(Math.random() * messages.length)]
               : { text: "No messages found." };
 
-            const selectedImages = getRandomImages(imageCollection, 4);
+            //const selectedImages = getRandomImages(imageCollection, 4);
 
             io.emit("gameStart", {
               message: randomMessage.text,
-              images: selectedImages,
+              //images: selectedImages,
             });
           } catch (err) {
             console.error("Error fetching message:", err);
