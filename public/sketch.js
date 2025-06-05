@@ -39,7 +39,7 @@ function setup() {
 
   
 
-  select("#send-button").mousePressed(sendText);
+  // select("#send-button").mousePressed(sendText);
   // select('#generate-button').mousePressed(generateText)
 
   //startInactivityTimer();
@@ -98,7 +98,7 @@ function setup() {
     console.log("end");
     sendText();
     inputBox.attribute("disabled", true);
-    select("#send-button").attribute("disabled", true);
+    // select("#send-button").attribute("disabled", true);
     showGameOverScreen();
   });
 
