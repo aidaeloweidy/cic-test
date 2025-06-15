@@ -3,18 +3,6 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const { MongoClient } = require("mongodb");
-// const imageCollection = [
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skelly_jirvnq.jpg", 
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/shadows_fi3210.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/signs_dgzdkg.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skies_axv8qj.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/watches_wxfxba.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-20_at_10.46.14_fdecccc6_e09edq.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/dolls_vibg8o.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/flowercar_hhgjgq.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-15_at_09.39.17_7dd9bbba_dg0rl7.jpg",
-//   "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/catsmassoud_fouixk.jpg",
-// ];
 
 const app = express();
 const server = http.createServer(app);
@@ -35,6 +23,13 @@ let timerInterval;
 let gameStarted = false;
 let gameOver = false;
 
+let sessionText = "";
+let sessionActive = false;
+let sessionCount = 1;
+let saveInterval = null;
+let fs = require("fs");
+let path = require("path");
+
 function startTimer() {
   startTime = Date.now();
 
@@ -46,11 +41,67 @@ function startTimer() {
     if (elapsedSeconds >= 900) {
       clearInterval(timerInterval);
       endGame();
-      console.log('timer done')
+      console.log("timer done");
     } else if (elapsedSeconds >= 720) {
       timerAlert();
     }
   }, 1000);
+}
+
+function startSession() {
+  sessionText = "";
+  sessionActive = true;
+
+  const sessionsFolder = path.join(__dirname, "sessions");
+  if (!fs.existsSync(sessionsFolder)) {
+    fs.mkdirSync(sessionsFolder);
+  }
+
+  const filePath = path.join(
+    __dirname,
+    "sessions",
+    `session-${sessionCount}.txt`
+  );
+}
+
+function appendtoSession(text) {
+  if (!sessionActive) return;
+
+  sessionText += text + "\n";
+
+  const filePath = path.join(
+    __dirname,
+    "sessions",
+    "sessions-${sessionCount}.txt"
+  );
+
+  try {
+    fs.appendFile(filePath, text + "\n");
+  } catch (err) {
+    console.error("Error writing to session file:", err);
+  }
+  console.log("attempted to append {entry}");
+}
+
+function endSession() {
+  const filePath = path.join(
+    __dirname,
+    "sessions",
+    `session-${sessionCount}.txt`
+  );
+
+  if (sessionText.trim().length > 0) {
+    try {
+      fs.appendFileSync(filePath, sessionText + "\n");
+      console.log(`Final session text saved for session ${sessionCount}`);
+    } catch (err) {
+      console.error("Error writing final session text:", err);
+    }
+  }
+
+  sessionText = ""; // clear after saving
+  sessionActive = false;
+  sessionCount += 1;
 }
 
 function timerAlert() {
@@ -62,7 +113,10 @@ function endGame() {
   console.log("ended");
   startTime = 0;
   gameStarted = false;
+  sessionActive = false;
   gameOver = true;
+
+  endSession();
 }
 
 async function connectToMongo() {
@@ -113,45 +167,49 @@ async function connectToMongo() {
         `User connected: ${socket.id} | Total: ${connectedUsers.size}`
       );
 
-      socket.on('registerPlayer', ()=> {
+      socket.on("registerPlayer", () => {
         if (!players.player1) {
           players.player1 = socket.id;
-          socket.emit('playerNumber', 1)
+          socket.emit("playerNumber", 1);
         } else if (!players.player2) {
           players.player2 = socket.id;
-          socket.emit('playerNumber', 2) 
+          socket.emit("playerNumber", 2);
         } else {
-          socket.emit('playerNumber', 0) 
+          socket.emit("playerNumber", 0);
         }
-        }
-      )
+      });
 
-      socket.on('playerTyping', (data) => {
+      socket.on("playerTyping", (data) => {
         let playerNum = null;
-        if (socket.id === players.player1) playerNum = 1; 
+        if (socket.id === players.player1) playerNum = 1;
         else if (socket.id === players.player2) playerNum = 2;
 
         if (playerNum) {
-          io.emit('updatePlayerTyping', {player : playerNum, text:data.text})
-          //console.log(data.text)
+         // const cleanText = data.text.trim();
+          // if (cleanText.length > 0 && sessionActive) {
+          //   sessionText += cleanText + "";
+          // }
+
+          io.emit("updatePlayerTyping", { player: playerNum, text: data.text });
         }
-      })
-    
+      });
+
       socket.on("disconnect", () => {
         connectedUsers.delete(socket.id);
         readyPlayers.delete(socket.id);
         if (players.player1 === socket.id) players.player1 = null;
-        if (players.player2 === socket.id) players.player2 = null;      
-        
+        if (players.player2 === socket.id) players.player2 = null;
+
         if (connectedUsers.size < 2) {
           gameStarted = false;
+          sessionActive = false;
           playerReadyCount = 0;
-          readyPlayers.clear()
+          readyPlayers.clear();
         }
         console.log(
           `User disconnected: ${socket.id} | Total: ${connectedUsers.size}`
         );
-        console.log('Players:', players)
+        console.log("Players:", players);
       });
 
       socket.on("tryStart", async () => {
@@ -170,6 +228,7 @@ async function connectToMongo() {
 
         if (readyPlayers.size === 2) {
           gameStarted = true;
+          startSession();
           gameOver = false;
 
           try {
@@ -197,8 +256,11 @@ async function connectToMongo() {
         console.log(" restarting...");
         readyPlayers.clear();
         gameStarted = false;
+        sessionActive = false;
         gameOver = false;
         timerStarted = false;
+
+        endSession();
         io.emit("gameReset");
       });
 
@@ -231,6 +293,19 @@ async function connectToMongo() {
           socket.broadcast.emit("updatePreview", { text: "" });
         } catch (e) {
           console.error(" Error saving to MongoDB:", e);
+        }
+
+        const filePath = path.join(
+          __dirname,
+          "sessions",
+          `session-${sessionCount}.txt`
+        );
+
+        try {
+          fs.appendFileSync(filePath, data.text + "\n");
+          console.log("Saved submitted text to file.");
+        } catch (err) {
+          console.error("Error writing submitted text:", err);
         }
       });
     });

@@ -36,12 +36,10 @@ body {
   text-align: center;
   white-space: pre-wrap;
   overflow-y: auto;
-  /* border: 0.3px dashed black; */
-  /* padding: 10px; */
+  font-size: x-large;
   margin-bottom: 70px;
   margin-top: 70px;
 }
-
 
 .text-box {
   width: 600px;
@@ -89,7 +87,7 @@ textarea {
 
 h1 {
   color: rgb(11, 10, 10);
-  background-color: rgb(252, 251, 251);
+  background-color: rgba(255, 255, 255, 0.7);
   padding: 10px;
 }
 
@@ -135,17 +133,17 @@ h1 {
 }
 
 #start-modal.show {
-  position: fixed;       
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.9); 
+  background: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center;    
-  z-index: 9999;           
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
   overflow: hidden;
 }
 
@@ -156,28 +154,30 @@ h1 {
 #end-line {
   /* position: fixed; */
   font-size: 15px;
+  background-color: (255, 255, 255, 0.58);
+  line-height: 25px;
   text-align: center;
 }
 
 .overlay-svg.show {
-  display:flex;
-  position: fixed;     
+  display: flex;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  pointer-events: none; 
+  pointer-events: none;
   z-index: 1;
 }
 
 .overlay-svg img {
-   width: 105%;
+  width: 105%;
   height: 105%;
-  object-fit: contain;  
+  object-fit: contain;
   display: block;
 }
 
-.overlay-svg.hide{
+.overlay-svg.hide {
   display: none;
 }
 
@@ -189,11 +189,11 @@ h1 {
   height: 100vh;
   background: rgba(236, 247, 252, 0.68);
   display: flex;
-  
+
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 50px; 
+  gap: 50px;
   z-index: 9999;
 }
 
@@ -225,7 +225,7 @@ h1 {
 }
 
 #timer-alert-display.hide {
-  display:none; 
+  display: none;
 }
 
 #image-prompt {
@@ -259,7 +259,7 @@ h1 {
   overflow-x: auto;
   max-height: 100vh;
   height: auto;
-  overflow-y: auto; 
+  overflow-y: auto;
 }
 
 button {
@@ -273,7 +273,7 @@ button {
 }
 
 #start-button {
-    position: relative; 
+  position: relative;
   z-index: 10;
   /* padding: 1em 2em; */
   /* font-size: 1.5rem; */
@@ -288,10 +288,32 @@ button#stealth-button {
 }
 
 #viewer-container {
-  display:flex;
+  display: flex;
   /* justify-content: space-between; */
   gap: 20px;
 }
+
+#live {
+  color: red;
+  font-style: bold;
+  padding-top: 10px;
+  animation: blinking 2s ease-in-out infinite;
+}
+
+  @keyframes blinking {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
 
 .player-box {
   flex: 1;
@@ -301,6 +323,7 @@ button#stealth-button {
   min-height: 100px;
   font-family: monospace;
   font-style: italic;
+  font-size: medium;
   opacity: 0;
   animation: blink 7s ease-out 2s infinite;
   white-space: pre-wrap;
@@ -308,14 +331,17 @@ button#stealth-button {
   background: #fefefe;
 }
 @keyframes blink {
-  50% { opacity:0.5; }
+  50% {
+    opacity: 0.5;
+  }
 }
 
+
 #body-view {
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content:flex-start;
+  justify-content: flex-start;
   /* min-height: 100vh; */
   padding: 40px;
   margin: 0%;

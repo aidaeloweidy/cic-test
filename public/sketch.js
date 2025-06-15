@@ -11,18 +11,45 @@ let gameOver = false;
 let playerNumber;
 
 const imageCollection = [
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skelly_jirvnq.jpg", 
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/shadows_fi3210.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/signs_dgzdkg.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746033452/skies_axv8qj.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/watches_wxfxba.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-20_at_10.46.14_fdecccc6_e09edq.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/dolls_vibg8o.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036076/flowercar_hhgjgq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749668054/IMG_7805_ivvsqy.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749667833/18afa5f8-54e9-4570-ae0a-d2bb80b6fbcf_ze0gqq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749667655/IMG_0405_em7x02.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749667654/IMG_0404_nlitzk.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749667653/IMG_0407_qgq9ze.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749667653/IMG_0406_yub1ty.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749667652/IMG_0408_ftx9ue.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749664433/IMG_0288_ulusht.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749664029/IMG_7497_bknw7l.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749663466/IMG_5180_lcb9vv.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749663028/IMG_1350_neurbx.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661809/IMG_4696_nw7hc7.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661632/IMG_2663_cmvjdg.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661408/FullSizeRender_r16kxg.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661374/IMG_0872_anbudl.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661295/IMG_9656_azvjoe.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661188/IMG_8764_nh8nwg.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661103/FullSizeRender_mtd10s.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749661062/IMG_7883_mfzl5t.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749660568/IMG_6094_quecvp.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749660124/2E7A7451-0887-48E8-9AFB-6C03E4DCBB02_mx8hbk.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749659204/IMG_6812_Original_yn0zup.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749659027/IMG_0954_qhhtox.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749658686/FullSizeRender_lb24g4.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749658517/FullSizeRender_em7kck.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749658380/FullSizeRender_gryhtx.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749657997/IMG_2261_dxd3wj.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749552439/IMG_3462_lkfnaz.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1749552314/IMG_0400_q9ti8n.jpg",
   "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-15_at_09.39.17_7dd9bbba_dg0rl7.jpg",
-  "https://res.cloudinary.com/dkctj89zw/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1746036075/catsmassoud_fouixk.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1748367689/WhatsApp_Image_2025-05-20_at_10.46.14_fdecccc6_e09edq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1746036076/watches_wxfxba.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1746036076/flowercar_hhgjgq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1746036075/dolls_vibg8o.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1746033452/skies_axv8qj.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1746033452/shadows_fi3210.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1746033452/skelly_jirvnq.jpg",
+  "https://res.cloudinary.com/dkctj89zw/image/upload/v1746033452/signs_dgzdkg.jpg",
 ];
-
 
 function setup() {
   noCanvas();
@@ -37,8 +64,6 @@ function setup() {
     //resetInactivityTimer();
   });
 
-  
-
   // select("#send-button").mousePressed(sendText);
   // select('#generate-button').mousePressed(generateText)
 
@@ -50,13 +75,11 @@ function setup() {
   socket = io.connect(window.location.origin);
   console.log("Client connected to server");
 
-  socket.emit('registerPlayer');
+  socket.emit("registerPlayer");
 
-  socket.on('playerNumber', (num) => {
+  socket.on("playerNumber", (num) => {
     playerNumber = num;
-
-  })
-
+  });
 
   //generateText();
 
@@ -79,7 +102,7 @@ function setup() {
     setTimeout(() => {
       hideImagePrompt();
       socket.emit("startTimer");
-    }, 20000); //30000 30 seconds
+    }, 30000); //30000 30 seconds
     console.log("started");
   });
 
@@ -110,7 +133,8 @@ function setup() {
   socket.on("timerAlert", () => {
     let timeAlert = document.getElementById("timer-alert-display");
     timeAlert.classList.remove("hide");
-    timeAlert.textContent = "متبقي من الوقت 3 دقائق";
+    timeAlert.textContent =
+      "متبقي من الوقت 3 دقائق there are 3 minutes left";
   });
 }
 
@@ -167,7 +191,7 @@ function sendPreview() {
   let data = { text: currentTypedText, stealth: stealthMode };
   socket.emit("previewChange", data);
 
-  socket.emit('playerTyping', {text: currentTypedText})
+  socket.emit("playerTyping", { text: currentTypedText });
 }
 
 // function updatePreview(data) {
@@ -202,7 +226,6 @@ function sendText() {
 //   let randomString = newText[randomIndex];
 // inputBox.value(inputBox.value()+randomString)
 // }
-
 
 function updateMainText(data) {
   if (data && data.text) {
